@@ -48,11 +48,11 @@ const IDBExportImport = {
           reject(event);
         };
         _.forEach(idbDatabase.objectStoreNames, storeName => {
-          const allObjects = [];
+          const allObjects = {};
           transaction.objectStore(storeName).openCursor().onsuccess = event => {
             const cursor = event.target.result;
             if (cursor) {
-              allObjects.push(cursor.value);
+              allObjects[cursor.keys](cursor.value);
               cursor.continue();
             } else {
               exportObject[storeName] = allObjects;
@@ -88,8 +88,11 @@ const IDBExportImport = {
       const importObject = JSON.parse(jsonString);
       _.forEach(idbDatabase.objectStoreNames, storeName => {
         let count = 0;
-        _.forEach(importObject[storeName], toAdd => {
-          const request = transaction.objectStore(storeName).add(toAdd);
+        _.forEach(_.keys(importObject[storeName]), keyToAdd => {
+          const request = transaction
+            .objectStore(storeName)
+            .add(importObject[storeName][keyToAdd], keyToAdd);
+
           request.onsuccess = event => {
             count++;
             if (count === importObject[storeName].length) {
