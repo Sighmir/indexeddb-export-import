@@ -24,17 +24,17 @@ db.version(1).stores({
   things: "id++, thing_name, thing_description"
 });
 db.open()
-  .then(() => {
+  .then(async () => {
     try {
       const idb_db = db.backendDB(); // get native IDBDatabase object from Dexie wrapper
 
       // export to JSON, clear database, and import from JSON
-      const jsonString = await IDBExportImport.exportToJsonString(idb_db)
-			console.log("Exported as JSON: " + jsonString);
+      const jsonString = await IDBExportImport.exportToJsonString(idb_db);
+      console.log("Exported as JSON: " + jsonString);
 
-      await IDBExportImport.clearDatabase(idb_db)
+      await IDBExportImport.clearDatabase(idb_db);
 
-			await IDBExportImport.importFromJsonString(idb_db, jsonString)
+      await IDBExportImport.importFromJsonString(idb_db, jsonString);
       console.log("Imported data successfully");
     } catch (err) {
       console.error(err);
@@ -50,20 +50,20 @@ Browser:
 ```js
 const request = indexedDB.open("MyDB");
 
-request.onerror = (event) => {
+request.onerror = event => {
   console.log("Failed to connect to IndexedDB!");
 };
 
-request.onsuccess = (event) => {
+request.onsuccess = async event => {
   const idb_db = event.target.result;
   try {
     // export to JSON, clear database, and import from JSON
-		const jsonString = await IDBExportImport.exportToJsonString(idb_db)
+    const jsonString = await IDBExportImport.exportToJsonString(idb_db);
 
-		console.log("Exported as JSON: " + jsonString);
-		await IDBExportImport.clearDatabase(idb_db)
+    console.log("Exported as JSON: " + jsonString);
+    await IDBExportImport.clearDatabase(idb_db);
 
-		await IDBExportImport.importFromJsonString(idb_db, jsonString)
+    await IDBExportImport.importFromJsonString(idb_db, jsonString);
     console.log("Imported data successfully");
   } catch (err) {
     console.error(err);
