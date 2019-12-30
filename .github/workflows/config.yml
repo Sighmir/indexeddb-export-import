@@ -8,8 +8,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: circleci/node:6
     steps:
       - name: Setup Node.js
         uses: actions/setup-node@v1
