@@ -2,8 +2,8 @@
 
 During development and testing it may be useful to be able to save and load the contents of an IndexedDB database.
 
-This project is a fork of [https://github.com/Polarisation/indexeddb-export-import](Polarisation/indexeddb-export-import).  
-He wrote this as a Node.js module for use with a desktop [https://electron.atom.io/](Electron) app - which has access to both the IndexedDB API and Node.js. But there are minimal dependencies so it should be easy to reuse the functions in a browser environment where Node.js is not available.
+This project is a fork of [Polarisation/indexeddb-export-import](https://github.com/Polarisation/indexeddb-export-import).  
+He wrote this as a Node.js module for use with a desktop [Electron](https://electron.atom.io/) app - which has access to both the IndexedDB API and Node.js. But there are minimal dependencies so it should be easy to reuse the functions in a browser environment where Node.js is not available.
 
 [![NPM](https://nodei.co/npm/@sighmir/indexeddb-export-import.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/@sighmir/indexeddb-export-import/)
 
