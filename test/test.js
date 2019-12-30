@@ -4,16 +4,16 @@ const IDBExportImport = require("../index");
 const assert = require("assert");
 
 describe("IDBExportImport", () => {
-  describe("#exportToJsonString()", () => {
+  describe("#exportToObject()", () => {
     it("DB with no object stores should export an empty string", done => {
       const db = new Dexie("NoObjectStoresDB", { indexedDB: fakeIndexedDB });
       db.version(1).stores({}); // nothing
       db.open()
         .then(() => {
           const idb_db = db.backendDB(); // get native IDBDatabase object from Dexie wrapper
-          IDBExportImport.exportToJsonString(idb_db)
-            .then(jsonString => {
-              assert.equal(jsonString, "{}");
+          IDBExportImport.exportToObject(idb_db)
+            .then(exportObject => {
+              assert.deepEqual(exportObject, {});
               done();
             })
             .catch(err => {
@@ -31,9 +31,9 @@ describe("IDBExportImport", () => {
       db.open()
         .then(() => {
           const idb_db = db.backendDB(); // get native IDBDatabase object from Dexie wrapper
-          IDBExportImport.exportToJsonString(idb_db)
-            .then(jsonString => {
-              assert.equal(jsonString, '{"things":{}}');
+          IDBExportImport.exportToObject(idb_db)
+            .then(exportObject => {
+              assert.deepEqual(exportObject, { things: {} });
               done();
             })
             .catch(err => {
@@ -71,32 +71,50 @@ describe("IDBExportImport", () => {
         const idb_db = db.backendDB(); // get native IDBDatabase object from Dexie wrapper
 
         // export to JSON, clear database, and import from JSON
-        IDBExportImport.exportToJsonString(idb_db)
-          .then(jsonString => {
-            console.log("Exported as JSON: " + jsonString);
-            assert.equal(
-              jsonString,
-              '{"things":{' +
-                '"1":{"thing_name":"First thing","thing_description":"This is the first thing","id":1},' +
-                '"2":{"thing_name":"Second thing","thing_description":"This is the second thing","id":2}}}'
-            );
+        IDBExportImport.exportToObject(idb_db)
+          .then(exportObject => {
+            console.log("Exported as JSON: " + JSON.stringify(exportObject));
+            assert.deepEqual(exportObject, {
+              things: {
+                "1": {
+                  thing_name: "First thing",
+                  thing_description: "This is the first thing",
+                  id: 1
+                },
+                "2": {
+                  thing_name: "Second thing",
+                  thing_description: "This is the second thing",
+                  id: 2
+                }
+              }
+            });
 
             IDBExportImport.clearDatabase(idb_db).then(err => {
               console.log("Cleared the database");
 
-              IDBExportImport.importFromJsonString(idb_db, jsonString)
+              IDBExportImport.importFromObject(idb_db, exportObject)
                 .then(() => {
                   console.log("Imported data successfully");
 
-                  IDBExportImport.exportToJsonString(idb_db)
-                    .then(jsonString => {
-                      console.log("Exported as JSON: " + jsonString);
-                      assert.equal(
-                        jsonString,
-                        '{"things":{' +
-                          '"1":{"thing_name":"First thing","thing_description":"This is the first thing","id":1},' +
-                          '"2":{"thing_name":"Second thing","thing_description":"This is the second thing","id":2}}}'
+                  IDBExportImport.exportToObject(idb_db)
+                    .then(exportObject => {
+                      console.log(
+                        "Exported as JSON: " + JSON.stringify(exportObject)
                       );
+                      assert.deepEqual(exportObject, {
+                        things: {
+                          "1": {
+                            thing_name: "First thing",
+                            thing_description: "This is the first thing",
+                            id: 1
+                          },
+                          "2": {
+                            thing_name: "Second thing",
+                            thing_description: "This is the second thing",
+                            id: 2
+                          }
+                        }
+                      });
 
                       done();
                     })

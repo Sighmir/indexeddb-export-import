@@ -18,7 +18,7 @@ const IDBExportImport = {
         reject(event);
       };
       let count = 0;
-      _.forEach(idbDatabase.objectStoreNames, storeName => {
+      Object.values(idbDatabase.objectStoreNames).forEach(storeName => {
         transaction.objectStore(storeName).clear().onsuccess = () => {
           count++;
           if (count === idbDatabase.objectStoreNames.length)
@@ -34,11 +34,10 @@ const IDBExportImport = {
    *
    * @param {IDBDatabase} idbDatabase - to export from
    */
-  exportToJsonString: idbDatabase => {
+  exportToObject: idbDatabase => {
     return new Promise((resolve, reject) => {
       const exportObject = {};
-      if (idbDatabase.objectStoreNames.length === 0)
-        resolve(JSON.stringify(exportObject));
+      if (idbDatabase.objectStoreNames.length === 0) resolve(exportObject);
       else {
         const transaction = idbDatabase.transaction(
           idbDatabase.objectStoreNames,
@@ -47,7 +46,7 @@ const IDBExportImport = {
         transaction.onerror = event => {
           reject(event);
         };
-        _.forEach(idbDatabase.objectStoreNames, storeName => {
+        Object.values(idbDatabase.objectStoreNames).forEach(storeName => {
           const allObjects = {};
           transaction.objectStore(storeName).openCursor().onsuccess = event => {
             const cursor = event.target.result;
@@ -58,9 +57,9 @@ const IDBExportImport = {
               exportObject[storeName] = allObjects;
               if (
                 idbDatabase.objectStoreNames.length ===
-                _.keys(exportObject).length
+                Object.keys(exportObject).length
               ) {
-                resolve(JSON.stringify(exportObject));
+                resolve(exportObject);
               }
             }
           };
@@ -70,13 +69,13 @@ const IDBExportImport = {
   },
 
   /**
-   * Import data from JSON into an IndexedDB database.
-   * This does not delete any existing data from the database, so keys could clash
+   * Import data from Object into an IndexedDB database.
+   * This overwrites objects with the same keys.
    *
    * @param {IDBDatabase} idbDatabase - to import into
-   * @param {string} jsonString - data to import, one key per object store
+   * @param {object} importObject - data to import, one key per object store
    */
-  importFromJsonString: (idbDatabase, jsonString) => {
+  importFromObject: (idbDatabase, importObject) => {
     return new Promise((resolve, reject) => {
       const transaction = idbDatabase.transaction(
         idbDatabase.objectStoreNames,
@@ -85,10 +84,9 @@ const IDBExportImport = {
       transaction.onerror = event => {
         reject(event);
       };
-      const importObject = JSON.parse(jsonString);
-      _.forEach(idbDatabase.objectStoreNames, storeName => {
+      Object.values(idbDatabase.objectStoreNames).forEach(storeName => {
         let count = 0;
-        _.forEach(_.keys(importObject[storeName]), keyToAdd => {
+        Object.keys(importObject[storeName]).forEach(keyToAdd => {
           const numberKey = Number(keyToAdd);
           const value = importObject[storeName][keyToAdd];
           const params = [value];
@@ -101,10 +99,10 @@ const IDBExportImport = {
 
           request.onsuccess = event => {
             count++;
-            if (count === _.keys(importObject[storeName]).length) {
+            if (count === Object.keys(importObject[storeName]).length) {
               // added all objects for this store
               delete importObject[storeName];
-              if (_.keys(importObject).length === 0)
+              if (Object.keys(importObject).length === 0)
                 // added all object stores
                 resolve(null);
             }
@@ -116,10 +114,5 @@ const IDBExportImport = {
 };
 
 if (isNode()) {
-  _ = {
-    forEach: require("lodash.foreach"),
-    keys: require("lodash.keys")
-  };
-
   module.exports = IDBExportImport;
 }
