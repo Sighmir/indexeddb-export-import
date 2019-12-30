@@ -12,4 +12,4 @@ jobs:
       image: circleci/node:6
     steps:
       - uses: actions/checkout@master
-        run: yarn install && yarn test
+      - run: yarn install && yarn test
