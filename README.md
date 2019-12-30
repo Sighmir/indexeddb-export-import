@@ -32,12 +32,12 @@ db.open()
       const idb_db = db.backendDB(); // get native IDBDatabase object from Dexie wrapper
 
       // export to JSON, clear database, and import from JSON
-      const jsonObject = await IDBExportImport.exportToObject(idb_db);
-      console.log("Exported as JSON: " + JSON.stringify(jsonObject));
+      const exportObject = await IDBExportImport.exportToObject(idb_db);
+      console.log("Exported as JSON: " + JSON.stringify(exportObject));
 
       await IDBExportImport.clearDatabase(idb_db);
 
-      await IDBExportImport.importFromObject(idb_db, jsonObject);
+      await IDBExportImport.importFromObject(idb_db, exportObject);
       console.log("Imported data successfully");
     } catch (err) {
       console.error(err);
@@ -61,12 +61,12 @@ request.onsuccess = async event => {
   const idb_db = event.target.result;
   try {
     // export to JSON, clear database, and import from JSON
-    const jsonObject = await IDBExportImport.exportToObject(idb_db);
+    const exportObject = await IDBExportImport.exportToObject(idb_db);
 
-    console.log("Exported as JSON: " + JSON.stringify(jsonObject));
+    console.log("Exported as JSON: " + JSON.stringify(exportObject));
     await IDBExportImport.clearDatabase(idb_db);
 
-    await IDBExportImport.importFromObject(idb_db, jsonObject);
+    await IDBExportImport.importFromObject(idb_db, exportObject);
     console.log("Imported data successfully");
   } catch (err) {
     console.error(err);
