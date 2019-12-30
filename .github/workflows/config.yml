@@ -1,0 +1,15 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: circleci/node:6
+    steps:
+      - uses: actions/checkout@master
+        run: yarn install && yarn test
