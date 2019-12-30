@@ -1,5 +1,5 @@
 {
-  "name": "indexeddb-export-import",
+  "name": "@sighmir/indexeddb-export-import",
   "version": "1.0.4",
   "description": "Export/import an IndexedDB database to/from JSON ",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Polarisation/indexeddb-export-import.git"
+    "url": "git+https://github.com/Sighmir/indexeddb-export-import.git"
   },
   "keywords": [
     "IndexedDB",
@@ -18,12 +18,12 @@
     "serialize",
     "deserialize"
   ],
-  "author": "Justin Emery",
+  "author": "Guilherme Caulada",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Polarisation/indexeddb-export-import/issues"
+    "url": "https://github.com/Sighmir/indexeddb-export-import/issues"
   },
-  "homepage": "https://github.com/Polarisation/indexeddb-export-import#readme",
+  "homepage": "https://github.com/Sighmir/indexeddb-export-import#readme",
   "devDependencies": {
     "dexie": "^2.0.4",
     "fake-indexeddb": "^2.0.4",
