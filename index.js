@@ -52,7 +52,7 @@ const IDBExportImport = {
           transaction.objectStore(storeName).openCursor().onsuccess = event => {
             const cursor = event.target.result;
             if (cursor) {
-              allObjects[cursor.keys](cursor.value);
+              allObjects[cursor.key](cursor.value);
               cursor.continue();
             } else {
               exportObject[storeName] = allObjects;
