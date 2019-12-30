@@ -33,7 +33,7 @@ describe("IDBExportImport", () => {
           const idb_db = db.backendDB(); // get native IDBDatabase object from Dexie wrapper
           IDBExportImport.exportToJsonString(idb_db)
             .then(jsonString => {
-              assert.equal(jsonString, '{"things":[]}');
+              assert.equal(jsonString, '{"things":{}}');
               done();
             })
             .catch(err => {
@@ -76,9 +76,9 @@ describe("IDBExportImport", () => {
             console.log("Exported as JSON: " + jsonString);
             assert.equal(
               jsonString,
-              '{"things":[' +
-                '{"thing_name":"First thing","thing_description":"This is the first thing","id":1},' +
-                '{"thing_name":"Second thing","thing_description":"This is the second thing","id":2}]}'
+              '{"things":{' +
+                '"1":{"thing_name":"First thing","thing_description":"This is the first thing","id":1},' +
+                '"2":{"thing_name":"Second thing","thing_description":"This is the second thing","id":2}}}'
             );
 
             IDBExportImport.clearDatabase(idb_db).then(err => {
@@ -93,28 +93,32 @@ describe("IDBExportImport", () => {
                       console.log("Exported as JSON: " + jsonString);
                       assert.equal(
                         jsonString,
-                        '{"things":[' +
-                          '{"thing_name":"First thing","thing_description":"This is the first thing","id":1}' +
-                          ',{"thing_name":"Second thing","thing_description":"This is the second thing","id":2}]}'
+                        '{"things":{' +
+                          '"1":{"thing_name":"First thing","thing_description":"This is the first thing","id":1},' +
+                          '"2":{"thing_name":"Second thing","thing_description":"This is the second thing","id":2}}}'
                       );
 
                       done();
                     })
                     .catch(err => {
+                      console.error(err);
                       assert.ifError(err);
                     });
                 })
                 .catch(err => {
+                  console.error(err);
                   assert.ifError(err);
                 });
             });
           })
           .catch(err => {
+            console.error(err);
             assert.ifError(err);
           });
       })
-      .catch(Dexie.BulkError, function(e) {
-        assert.ifError(e);
+      .catch(Dexie.BulkError, function(err) {
+        console.error(err);
+        assert.ifError(err);
       });
   });
 });

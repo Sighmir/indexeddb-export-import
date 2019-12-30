@@ -89,13 +89,19 @@ const IDBExportImport = {
       _.forEach(idbDatabase.objectStoreNames, storeName => {
         let count = 0;
         _.forEach(_.keys(importObject[storeName]), keyToAdd => {
-          const request = transaction
-            .objectStore(storeName)
-            .add(importObject[storeName][keyToAdd], keyToAdd);
+          const numberKey = Number(keyToAdd);
+          const value = importObject[storeName][keyToAdd];
+          const params = [value];
+
+          if (!value.id) {
+            params.push(isNaN(numberKey) ? keyToAdd : numberKey);
+          }
+
+          const request = transaction.objectStore(storeName).put(...params);
 
           request.onsuccess = event => {
             count++;
-            if (count === importObject[storeName].length) {
+            if (count === _.keys(importObject[storeName]).length) {
               // added all objects for this store
               delete importObject[storeName];
               if (_.keys(importObject).length === 0)
